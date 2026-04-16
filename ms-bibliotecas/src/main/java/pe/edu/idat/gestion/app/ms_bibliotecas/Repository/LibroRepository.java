@@ -9,8 +9,9 @@ import java.util.List;
 
 //Se conecta a la BD
 @Repository
-public interface LibroRepository extends JpaRepository<Libro,Long> {
+public interface LibroRepository extends JpaRepository<Libro, Long> {
 
-    List<Libro> findByTituloContainingIgnoreCase(String titulo); //Para buscar libro por titulo o autor
+    boolean existsByTitulo(String titulo);
 
+    List<Libro> findByTitulo(String titulo);
 }

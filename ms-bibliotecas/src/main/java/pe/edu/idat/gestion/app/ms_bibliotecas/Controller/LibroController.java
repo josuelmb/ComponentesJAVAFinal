@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.idat.gestion.app.ms_bibliotecas.Dto.Response.ApiResponse;
 import pe.edu.idat.gestion.app.ms_bibliotecas.Dto.Response.LibroResponseDto;
@@ -40,6 +41,7 @@ public class LibroController {
     }
     @Operation(summary = "Crear Libro")
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<LibroResponseDto>> create(
             @Valid @RequestBody LibroRequestDto libroRequestDto) {
 
@@ -53,6 +55,7 @@ public class LibroController {
     }
     @Operation(summary = "Actualizar Libro por ID")
     @PutMapping("/{idLibro}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<LibroResponseDto>> update(
             @PathVariable Long idLibro,
             @Valid @RequestBody LibroRequestDto libroRequestDto) {
@@ -66,6 +69,7 @@ public class LibroController {
     }
     @Operation(summary = "Eliminar libro por ID")
     @DeleteMapping("/{idLibro}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long idLibro) {
 

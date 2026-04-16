@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.idat.gestion.app.ms_bibliotecas.Dto.Response.ApiResponse;
@@ -25,6 +26,7 @@ public class PrestamoController {
     private final PrestamoService prestamoService;
     @Operation(summary = "Obtener detalle de Prestamos")
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<PrestamoResponseDto>>> findAll() {
 
         return ResponseEntity.ok(
@@ -50,6 +52,7 @@ public class PrestamoController {
         );
     }
     @Operation(summary = "Crear Prestamos")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<PrestamoResponseDto>> create(
             @Valid @RequestBody PrestamoRequestDto prestamoRequestDto) {
@@ -63,6 +66,7 @@ public class PrestamoController {
                 );
     }
     @Operation(summary = "Actualizar Prestamo por ID")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{idPrestamo}")
     public ResponseEntity<ApiResponse<PrestamoResponseDto>> update(
             @PathVariable Long idPrestamo,
@@ -76,6 +80,7 @@ public class PrestamoController {
         );
     }
     @Operation(summary = "Actualizar devolucion por ID")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{idPrestamo}/devolucion")
     public ResponseEntity<ApiResponse<PrestamoResponseDto>> registrarDevolucion(@PathVariable Long idPrestamo) {
         PrestamoResponseDto response = prestamoService.registrarDevolucion(idPrestamo);
@@ -86,6 +91,7 @@ public class PrestamoController {
     }
 
     @Operation(summary = "Eliminar informacion de Prestamo por ID")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{idPrestamo}")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long idPrestamo) {

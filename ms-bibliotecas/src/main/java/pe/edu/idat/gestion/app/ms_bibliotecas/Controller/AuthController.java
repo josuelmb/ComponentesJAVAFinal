@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ import pe.edu.idat.gestion.app.ms_bibliotecas.Service.Implementaciones.AuthServi
         }
         @Operation(summary = "Registrarse")
         @PostMapping("/register")
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ApiResponse<UsuarioResponseDto>> register(@Valid @RequestBody RegisterRequest registerRequest)
         {
             return ResponseEntity.ok(ApiResponse.ok("Usuario registrado exitosamente", authService.register(registerRequest)));

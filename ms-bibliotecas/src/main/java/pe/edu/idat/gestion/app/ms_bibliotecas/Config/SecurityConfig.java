@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pe.edu.idat.gestion.app.ms_bibliotecas.Security.CustomAccessDeniedHandler;
 import pe.edu.idat.gestion.app.ms_bibliotecas.Security.JwtAuthFilter;
 import pe.edu.idat.gestion.app.ms_bibliotecas.Security.UserDetailsServiceImpl;
 
@@ -29,6 +30,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsServiceImpl userDetailsService;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
 
     @Bean
@@ -63,6 +65,9 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

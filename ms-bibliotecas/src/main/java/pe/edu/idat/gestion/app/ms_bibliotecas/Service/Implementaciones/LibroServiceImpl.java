@@ -11,6 +11,7 @@ import pe.edu.idat.gestion.app.ms_bibliotecas.Dto.request.LibroRequestDto;
 import pe.edu.idat.gestion.app.ms_bibliotecas.Entity.Libro;
 import pe.edu.idat.gestion.app.ms_bibliotecas.Mapper.LibroMapper;
 import pe.edu.idat.gestion.app.ms_bibliotecas.Repository.LibroRepository;
+import pe.edu.idat.gestion.app.ms_bibliotecas.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class LibroServiceImpl implements LibroService {
     public LibroResponseDto findById(long idLibro) {
 
         Libro libro = libroRepository.findById(idLibro)
-                .orElseThrow(() -> new RuntimeException("Error al buscar el libro"));
+                .orElseThrow(() -> new ResourceNotFoundException("Error al buscar el libro"));
 
         return libroMapper.toResponse(libro);
     }
@@ -43,20 +44,22 @@ public class LibroServiceImpl implements LibroService {
     @Override
     @Transactional
     public LibroResponseDto create(LibroRequestDto libroRequestDto) {
-
         log.info("Create Libro: {}", libroRequestDto);
 
-        Libro libro = libroMapper.toEntity(libroRequestDto);
+        // REGLA DE NEGOCIO: Validar si ya existe un libro con ese título
+        if (libroRepository.existsByTitulo(libroRequestDto.getTitulo())) {
+            throw new IllegalArgumentException("Ya existe un libro registrado con ese título");
+        }
 
+        Libro libro = libroMapper.toEntity(libroRequestDto);
         return libroMapper.toResponse(libroRepository.save(libro));
     }
-
     @Override
     @Transactional
     public LibroResponseDto update(Long idLibro, LibroRequestDto libroRequestDto) {
 
         Libro libro = libroRepository.findById(idLibro)
-                .orElseThrow(() -> new RuntimeException("Error al buscar el libro"));
+                .orElseThrow(() -> new ResourceNotFoundException("Error al buscar el libro"));
 
         log.info("Update Libro: {}", libroRequestDto);
 
@@ -70,7 +73,7 @@ public class LibroServiceImpl implements LibroService {
     public void delete(Long idLibro) {
 
         Libro libro = libroRepository.findById(idLibro)
-                .orElseThrow(() -> new RuntimeException("No existe el id del libro"));
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el id del libro"));
 
         libroRepository.delete(libro);
 
